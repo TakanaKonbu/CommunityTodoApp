@@ -13,17 +13,17 @@ abstract class TodoDatabase : RoomDatabase() {
 
     companion object {
         @Volatile
-        private var Instance: TodoDatabase? = null
+        private var INSTANCE: TodoDatabase? = null
 
         fun getDatabase(context: Context): TodoDatabase {
-            return Instance ?: synchronized(this) {
-                Room.databaseBuilder(
-                    context,
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext, // applicationContextを使用
                     TodoDatabase::class.java,
-                    "todo_database"
-                )
-                    .build()
-                    .also { Instance = it }
+                    "todo_database.db" // .dbの拡張子を追加
+                ).build()
+                INSTANCE = instance
+                instance
             }
         }
     }
