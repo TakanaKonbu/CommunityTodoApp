@@ -6,6 +6,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.takanakonbu.communitytodoapp.data.Todo
@@ -14,11 +15,12 @@ import com.takanakonbu.communitytodoapp.data.Todo
 @Composable
 fun TodoEditScreen(
     todo: Todo? = null,
-    onSaveClick: (String, String) -> Unit,
+    onSaveClick: (String, String, Boolean) -> Unit,  // パラメータ追加
     onBackClick: () -> Unit
 ) {
     var title by remember { mutableStateOf(todo?.title ?: "") }
     var content by remember { mutableStateOf(todo?.content ?: "") }
+    var isDontWantToDo by remember { mutableStateOf(todo?.isDontWantToDo ?: false) }  // 追加
 
     Scaffold(
         topBar = {
@@ -33,7 +35,7 @@ fun TodoEditScreen(
                     IconButton(
                         onClick = {
                             if (title.isNotBlank()) {
-                                onSaveClick(title, content)
+                                onSaveClick(title, content, isDontWantToDo)  // パラメータ追加
                             }
                         }
                     ) {
@@ -65,6 +67,22 @@ fun TodoEditScreen(
                     .weight(1f),
                 minLines = 3
             )
+            // チェックボックスを追加
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = isDontWantToDo,
+                    onCheckedChange = { isDontWantToDo = it }
+                )
+                Text(
+                    text = "やりたくない",
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
         }
     }
 }

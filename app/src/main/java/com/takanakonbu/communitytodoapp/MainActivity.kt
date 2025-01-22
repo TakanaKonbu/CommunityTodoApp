@@ -49,12 +49,13 @@ class MainActivity : ComponentActivity() {
 
                     composable(Screen.AddTodo.route) {
                         TodoEditScreen(
-                            onSaveClick = { title, content ->
-                                viewModel.addTodo(title, content)
+                            onSaveClick = { title, content, isDontWantToDo ->
+                                viewModel.addTodo(title, content, isDontWantToDo)
                                 navController.navigateUp()
                             },
                             onBackClick = { navController.navigateUp() }
                         )
+
                     }
 
                     composable(
@@ -66,8 +67,12 @@ class MainActivity : ComponentActivity() {
 
                         TodoEditScreen(
                             todo = todo,
-                            onSaveClick = { title, content ->
-                                viewModel.updateTodo(todo.copy(title = title, content = content))
+                            onSaveClick = { title, content, isDontWantToDo ->
+                                viewModel.updateTodo(todo.copy(
+                                    title = title,
+                                    content = content,
+                                    isDontWantToDo = isDontWantToDo
+                                ))
                                 navController.navigateUp()
                             },
                             onBackClick = { navController.navigateUp() }

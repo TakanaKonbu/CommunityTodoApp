@@ -66,10 +66,18 @@ fun TodoItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = todo.title,
-                    style = MaterialTheme.typography.titleMedium
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = todo.title,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    if (todo.isDontWantToDo) {
+                        Text("😭")
+                    }
+                }
                 Text(
                     text = todo.content,
                     style = MaterialTheme.typography.bodyMedium,

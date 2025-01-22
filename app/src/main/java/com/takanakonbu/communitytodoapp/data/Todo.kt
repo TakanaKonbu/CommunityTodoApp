@@ -10,5 +10,6 @@ data class Todo(
     val id: Int = 0,
     val title: String,
     val content: String,
-    val updatedAt: LocalDateTime
+    val updatedAt: LocalDateTime,
+    val isDontWantToDo: Boolean = false  // 追加
 )

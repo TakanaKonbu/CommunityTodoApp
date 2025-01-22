@@ -15,11 +15,12 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
     private val todoDao: TodoDao = (application as TodoApplication).database.todoDao()
     val allTodos: Flow<List<Todo>> = todoDao.getAllTodos()
 
-    fun addTodo(title: String, content: String) {
+    fun addTodo(title: String, content: String, isDontWantToDo: Boolean) {
         val todo = Todo(
             title = title,
             content = content,
-            updatedAt = LocalDateTime.now()
+            updatedAt = LocalDateTime.now(),
+            isDontWantToDo = isDontWantToDo
         )
         viewModelScope.launch {
             try {
