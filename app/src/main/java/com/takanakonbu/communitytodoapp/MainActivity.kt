@@ -18,6 +18,7 @@ import com.takanakonbu.communitytodoapp.ui.navigation.Screen
 import com.takanakonbu.communitytodoapp.ui.screens.TodoEditScreen
 import com.takanakonbu.communitytodoapp.ui.screens.TodoListScreen
 import com.takanakonbu.communitytodoapp.ui.theme.CommunityTodoAppTheme
+import java.time.LocalDateTime
 
 class MainActivity : ComponentActivity() {
     private val viewModel: TodoViewModel by viewModels {
@@ -49,13 +50,17 @@ class MainActivity : ComponentActivity() {
 
                     composable(Screen.AddTodo.route) {
                         TodoEditScreen(
-                            onSaveClick = { title, content, isDontWantToDo ->
-                                viewModel.addTodo(title, content, isDontWantToDo)
+                            onSaveClick = { title, content, dueDate, isDontWantToDo ->
+                                viewModel.addTodo(
+                                    title = title,
+                                    content = content,
+                                    dueDate = dueDate,
+                                    isDontWantToDo = isDontWantToDo
+                                )
                                 navController.navigateUp()
                             },
                             onBackClick = { navController.navigateUp() }
                         )
-
                     }
 
                     composable(
@@ -67,11 +72,13 @@ class MainActivity : ComponentActivity() {
 
                         TodoEditScreen(
                             todo = todo,
-                            onSaveClick = { title, content, isDontWantToDo ->
+                            onSaveClick = { title, content, dueDate, isDontWantToDo ->
                                 viewModel.updateTodo(todo.copy(
                                     title = title,
                                     content = content,
-                                    isDontWantToDo = isDontWantToDo
+                                    dueDate = dueDate,
+                                    isDontWantToDo = isDontWantToDo,
+                                    updatedAt = LocalDateTime.now()
                                 ))
                                 navController.navigateUp()
                             },

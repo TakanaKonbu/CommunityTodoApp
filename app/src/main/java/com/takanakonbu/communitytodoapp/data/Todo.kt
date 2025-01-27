@@ -11,5 +11,6 @@ data class Todo(
     val title: String,
     val content: String,
     val updatedAt: LocalDateTime,
-    val isDontWantToDo: Boolean = false  // 追加
+    val dueDate: LocalDateTime?, // 追加：完了予定日（null許容）
+    val isDontWantToDo: Boolean = false
 )

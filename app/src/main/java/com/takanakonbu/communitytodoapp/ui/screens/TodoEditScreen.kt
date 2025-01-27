@@ -10,17 +10,54 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.takanakonbu.communitytodoapp.data.Todo
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoEditScreen(
     todo: Todo? = null,
-    onSaveClick: (String, String, Boolean) -> Unit,  // パラメータ追加
+    onSaveClick: (String, String, LocalDateTime?, Boolean) -> Unit,  // 引数追加
     onBackClick: () -> Unit
 ) {
     var title by remember { mutableStateOf(todo?.title ?: "") }
     var content by remember { mutableStateOf(todo?.content ?: "") }
-    var isDontWantToDo by remember { mutableStateOf(todo?.isDontWantToDo ?: false) }  // 追加
+    var isDontWantToDo by remember { mutableStateOf(todo?.isDontWantToDo ?: false) }
+    var dueDate by remember { mutableStateOf(todo?.dueDate) }
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    // DatePicker ダイアログ
+    if (showDatePicker) {
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = dueDate?.atZone(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+        )
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            dueDate = Instant.ofEpochMilli(millis)
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDateTime()
+                        }
+                        showDatePicker = false
+                    }
+                ) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("キャンセル")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -35,7 +72,7 @@ fun TodoEditScreen(
                     IconButton(
                         onClick = {
                             if (title.isNotBlank()) {
-                                onSaveClick(title, content, isDontWantToDo)  // パラメータ追加
+                                onSaveClick(title, content, dueDate, isDontWantToDo)
                             }
                         }
                     ) {
@@ -67,7 +104,21 @@ fun TodoEditScreen(
                     .weight(1f),
                 minLines = 3
             )
-            // チェックボックスを追加
+
+            // 完了予定日選択ボタン
+            OutlinedButton(
+                onClick = { showDatePicker = true },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                Text(
+                    text = dueDate?.format(
+                        DateTimeFormatter.ofPattern("yyyy/MM/dd")
+                    ) ?: "完了予定日を設定"
+                )
+            }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
